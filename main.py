@@ -2,8 +2,7 @@ import os
 import tkinter
 import tkinter.messagebox
 from time import time
-from write_Excel import write_Data
-from count_CVNA import count_CVNA
+
 from datetime import  datetime
 import tkinter as tk
 from tkinter.filedialog import askdirectory
@@ -28,10 +27,8 @@ if __name__ == '__main__':
     brands = brands.lower()
     brand_list = brands.split(" ")
 
-    write = write_Data()
     location = request_location()
 
-    write.set_location(location)
     date = datetime.now().strftime("%d-%b-%Y")
 
     time1 = time()
