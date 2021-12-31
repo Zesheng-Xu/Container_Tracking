@@ -36,31 +36,6 @@ if __name__ == '__main__':
 
     time1 = time()
 
-    dir = os.listdir(location)
-    if len(dir) == 0 :
-        CVNA_count, cars_list = count_CVNA.count(brand_list)
-        write.write_xlsx(CVNA_count, "Carvana")
-        write.write_txt(cars_list, "Carvana")
-    else:
-        files = dir
-        paths = [os.path.join(location, basename) for basename in files]
-        temp_paths = paths
-        for x in range(len(paths)):
-            if ".txt" not in paths[x]:
-                temp_paths.remove(paths[x])
-
-
-
-        location = max(temp_paths, key=os.path.getctime)
-        print(location)
-
-
-
-
-
-        CVNA_count, cars_list = count_CVNA.check_data(count_CVNA.open_data(location))
-        write.write_xlsx(CVNA_count, "Carvana")
-        write.write_txt(cars_list, "Carvana" + str(date))
 
     tkinter.messagebox.showinfo(title="Program has finished running", message="The result will be in " + location +"\n The program took: %s seconds " % str(time()-time1) )
     root.update()
