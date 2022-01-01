@@ -8,6 +8,12 @@ import tkinter as tk
 from tkinter.filedialog import askopenfilename
 global root
 import pandas as pd
+from selenium import webdriver
+from urllib.request import urlopen,Request
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
 def request_location():
 
     root.withdraw()
@@ -16,7 +22,18 @@ def request_location():
     root.update()
     root.withdraw()
     return  path
+
+def check_container(container_ID):
+    url = "http://www.shippingline.org/track/?type=bill&container="+container_ID+"&line=&track=Track+container"
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req).read().decode("utf-8")
+    print(url)
+    print(webpage)
+
 if __name__ == '__main__':
+
+
+
     root = tk.Tk()
     print("Hello world")
 
@@ -32,7 +49,7 @@ if __name__ == '__main__':
     ETD_ind = 0
     indexes = list(containers.columns)
     for i in range(0,len(indexes)):
-        print(indexes[i], i)
+
         if indexes[i] == 'Container NO':
             container_index = i
         elif indexes[i] == 'Actual ETD':
@@ -41,7 +58,22 @@ if __name__ == '__main__':
             ETA_ind = i
     print(container_index,ETD_ind,ETA_ind)
     matrix = containers.to_numpy()
-    print(matrix)
+
+    driver = webdriver.Chrome("chromedriver.exe")
+    driver.get("http://www.shippingline.org")
+    # first search page
+    search_ele = driver.find_element_by_xpath("//*[@id=\"id_seacrh\"]")
+    search_confirm_ele = driver.find_element_by_xpath("//*[@id=\"id_search_submit\"]")
+    search_ele.send_keys(matrix[container_index][0])
+    search_confirm_ele.click()
+    # wait for the page to load
+
+
+    # second search confirm page
+    search_ele = driver.find_element_by_xpath("//*[@id=\"idTAUnitNo\"]")
+    search_ele.send_keys(matrix[container_index][0])
+    search_confirm_ele = driver.find_element_by_xpath("//*[@id=\"idBtnUnitEnqSubmit\"]")
+    search_confirm_ele.click()
     # print(containers[['Container NO','Actual ETD','Actual ETA']])
 
     tkinter.messagebox.showinfo(title="Program has finished running", message="The result will be in " + location +"\n The program took: %s seconds " % str(time()-time1) )
